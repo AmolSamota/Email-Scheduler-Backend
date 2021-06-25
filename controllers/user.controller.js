@@ -28,4 +28,7 @@ const currentUser = (req, res) => {
     });
 };
 
-module.exports = { createOrUpdateUser, currentUser };
+module.exports = { 
+    createOrUpdateUser, 
+    currentUser 
+};

@@ -1,4 +1,4 @@
-const router = require("express").Router;
+const router = require("express").Router();
 const mailController = require("../controllers/mail.controller.js");
 const { authCheck } = require("../middlewares/auth");
 
@@ -14,7 +14,11 @@ router.get(
 /**
  * API TO ACCESS ALL SENT EMAILS
  */
-router.get("/sent-emails/:name", authCheck, mailController.getSentEmails);
+router.get(
+    "/sent-emails/:name", 
+    authCheck, 
+    mailController.getSentEmails
+);
 
 /**
  * API TO ACCESS ALL EMAILS TO BE SENT IN FUTURE
@@ -28,4 +32,19 @@ router.get(
 /**
  * API TO SEND A NEW EMAIL
  */
-router.post("/send-mail", authCheck, mailController.sendEmail);
+router.post(
+    "/send-mail/:name", 
+    authCheck, 
+    mailController.sendEmail
+);
+
+/**
+ * API TO CHANGE SCHEDULE TYPE OF A EMAIL
+ */
+router.post(
+    "/change-scheduler-type",
+    authCheck,
+    mailController.updateScheduleType 
+);
+
+module.exports = router;
