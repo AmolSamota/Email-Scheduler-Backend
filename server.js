@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const { readdirSync } = require("fs");
+const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
 
@@ -28,6 +29,7 @@ db.once("open", function () {
     readdirSync("./routes").map((filename) =>
         app.use("/api", require("./routes/" + filename))
     );
+    app.use(errorHandler);
 });
 
 const port = process.env.PORT || 8000;

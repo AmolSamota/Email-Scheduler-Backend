@@ -5,26 +5,18 @@ const { authCheck } = require("../middlewares/auth");
 /**
  * API TO ACCESS ALL RECEIVED EMAILS
  */
-router.get(
-    "/received-emails/:name",
-    authCheck,
-    mailController.getReceivedEmails
-);
+router.get("/received-emails", authCheck, mailController.getReceivedEmails);
 
 /**
  * API TO ACCESS ALL SENT EMAILS
  */
-router.get(
-    "/sent-emails/:name", 
-    authCheck, 
-    mailController.getSentEmails
-);
+router.get("/sent-emails", authCheck, mailController.getSentEmails);
 
 /**
  * API TO ACCESS ALL EMAILS TO BE SENT IN FUTURE
  */
 router.get(
-    "/future-sent-emails/:name",
+    "/future-sent-emails",
     authCheck,
     mailController.getEmailsToBeSentInFuture
 );
@@ -32,11 +24,7 @@ router.get(
 /**
  * API TO SEND A NEW EMAIL
  */
-router.post(
-    "/send-mail/:name", 
-    authCheck, 
-    mailController.sendEmail
-);
+router.post("/send-email", authCheck, mailController.sendEmail);
 
 /**
  * API TO CHANGE SCHEDULE TYPE OF A EMAIL
@@ -44,7 +32,7 @@ router.post(
 router.post(
     "/change-scheduler-type",
     authCheck,
-    mailController.updateScheduleType 
+    mailController.updateScheduleType
 );
 
 module.exports = router;

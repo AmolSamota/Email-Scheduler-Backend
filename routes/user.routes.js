@@ -1,8 +1,8 @@
 const router = require("express").Router();
-const userController = require("../controllers/user");
+const userController = require("../controllers/user.controller");
 const { authCheck } = require("../middlewares/auth");
 
-router.post("/create-or-update-user", authCheck, userController.createOrUpdateUser);
-router.post("/current-user", authCheck, userController.currentUser);
+// create new user if not exists
+router.post("/create-user", authCheck, userController.createUser);
 
 module.exports = router;
