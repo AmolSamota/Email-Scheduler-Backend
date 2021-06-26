@@ -19,7 +19,7 @@ const sendEmail = async (req, res, next) => {
         const receiver = await User.findOne({ email: email });
         receiversIdArray.push(receiver._id);
     }
-    console.log("REceiver id", receiversIdArray);
+    // console.log("REceiver id", receiversIdArray);
     try {
         const mail = new Mail({
             _id: new mongoose.Types.ObjectId(),
@@ -70,7 +70,7 @@ const getSentEmails = async (req, res, next) => {
             },
         });
         const filteredEmails = [];
-        console.log("user", user.sentEmails);
+        // console.log("user", user.sentEmails);
         const sentEmails = user.sentEmails;
 
         const timeNow = new Date();
@@ -80,7 +80,7 @@ const getSentEmails = async (req, res, next) => {
              * and push emails having time less than current time
              * in filterted emails
              */
-            console.log("ecreatedAt", email.createdAt, "now", timeNow);
+            // console.log("ecreatedAt", email.createdAt, "now", timeNow);
             if (email.createdAt < timeNow) {
                 filteredEmails.push(email);
             }
@@ -97,7 +97,22 @@ const getSentEmails = async (req, res, next) => {
 const getReceivedEmails = async (req, res, next) => {
     try {
         const emailAddress = req.user.email;
-        const user = await User.findOne({ email: emailAddress });
+        const user = await User.findOne({ email: emailAddress })
+            .populate({
+                path: "receivedEmails",
+                populate: {
+                    path: "sender",
+                    select: "name email",
+                },
+            })
+            .populate({
+                path: "receivedEmails",
+                populate: {
+                    path: "receivers",
+                    select: "email name",
+                },
+            });
+
         res.json(user.receivedEmails);
     } catch (error) {
         next(error);
