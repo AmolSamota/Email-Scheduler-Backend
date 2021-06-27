@@ -29,10 +29,10 @@ router.post("/send-email", authCheck, mailController.sendEmail);
 /**
  * API TO CHANGE SCHEDULE TYPE OF A EMAIL
  */
-router.post(
-    "/change-scheduler-type",
-    authCheck,
-    mailController.updateScheduleType
-);
+// router.post(
+//     "/change-scheduler-type",
+//     authCheck,
+//     mailController.updateScheduleType
+// );
 
 module.exports = router;
