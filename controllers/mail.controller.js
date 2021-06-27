@@ -6,51 +6,54 @@ const mongoose = require("mongoose");
  * SERVICE TO SEND A NEW EMAIL
  */
 const sendEmail = async (req, res, next) => {
-    const senderEmail = req.user.email;
-    const sender = await User.findOne({ email: senderEmail });
-
-    const payload = req.body;
-    const { receivers } = payload;
-
-    // creating the receiver id array
-    const receiversEmailAddress = receivers.split(",");
-    const receiversIdArray = [];
-    for (let email of receiversEmailAddress) {
-        const receiver = await User.findOne({ email: email });
-        receiversIdArray.push(receiver._id);
-    }
-    // console.log("REceiver id", receiversIdArray);
     try {
+        const senderEmail = req.user.email;
+        const sender = await User.findOne({ email: senderEmail });
+
+        const payload = req.body;
+        const { receivers, scheduleType, scheduleDate, subject, body } =
+            payload;
+
+        // creating the receiver id array
+        const receiversEmailAddress = receivers.split(",");
+        const receiversIdArray = [];
+        for (let email of receiversEmailAddress) {
+            const receiver = await User.findOne({ email: email });
+            receiversIdArray.push(receiver._id);
+        }
+        // console.log("REceiver id", receiversIdArray);
+
         const mail = new Mail({
             _id: new mongoose.Types.ObjectId(),
             sender: sender._id,
             receivers: receiversIdArray,
-            subject: payload.subject,
-            scheduleType: payload.scheduleType,
-            scheduleTime: payload.scheduleTime,
-            body: payload.body,
-            // day: payload.day,
-            // date: payload.date,
-            // time: payload.time,
+            subject: subject,
+            scheduleType: scheduleType,
+            scheduleDate: scheduleDate,
+            body: body,
         });
         await mail.save(async function (err) {
             if (err) return next(err);
 
-            // fill sentEmails of sender user
-            // const sender = await User.findOne({ email: senderEmail });
-            // console.log("sender", sender);
-            sender.sentEmails.push(mail);
-            await sender.save();
+            if (scheduleType === null) {
+                // fill sentEmails of sender user
+                // const sender = await User.findOne({ email: senderEmail });
+                // console.log("sender", sender);
+                sender.sentEmails.push(mail);
+                await sender.save();
 
-            // fill receivedEmails of receiver user
-            for (let email of receiversEmailAddress) {
-                // console.log("emil", email);
-                const receiver = await User.findOne({ email: email });
-                // console.log("receiver", receiver);
-                receiver.receivedEmails.push(mail);
-                await receiver.save();
+                // fill receivedEmails of receiver user
+                for (let email of receiversEmailAddress) {
+                    // console.log("emil", email);
+                    const receiver = await User.findOne({ email: email });
+                    // console.log("receiver", receiver);
+                    receiver.receivedEmails.push(mail);
+                    await receiver.save();
+                }
+                res.json("Mail Added to DB And sent to receivers");
+            } else {
+                res.json("Email scheduled");
             }
-            res.json("Mail Added to DB And sent to receivers");
         });
     } catch (error) {
         next(error);
@@ -67,6 +70,7 @@ const getSentEmails = async (req, res, next) => {
             path: "sentEmails",
             populate: {
                 path: "receivers",
+                select: ["name", "email"],
             },
         });
         const filteredEmails = [];

@@ -19,7 +19,7 @@ const mailSchema = new Schema(
         /** For Monthly we have to set date and time of every Month */
         /** For Yearly we have to set date and time of every Year */
         scheduleType: String,
-        scheduleTime: Date,
+        scheduleDate: Date,
         // time: String, // For weekly, monthly, and yearly
         // day: String, // For weekly
         // date: Date, // For yearly and monthly
