@@ -133,16 +133,26 @@ const getEmailsToBeSentInFuture = async (req, res, next) => {
          */
         const emailAddress = req.user.email;
         const user = await User.findOne({ email: emailAddress });
-        const sentEmails = user.sentEmails;
+        console.log("user", user);
+
+        // const find scheduled emails
+        const scheduledMailsForUser = await Mail.find({
+            sender: user._id,
+            scheduleType: { $ne: null },
+        }).populate({
+            path: "receivers",
+            select: "email name",
+        });
+        // const sentEmails = user.sentEmails;
         const filteredEmails = [];
-        for (let email of sentEmails) {
+        for (let email of scheduledMailsForUser) {
             /**
              * 2. compare the timestamp of email with current time
              * and push emails having time greater than current time
              * in filterted emails
              */
         }
-        res.json(filteredEmails);
+        res.json(scheduledMailsForUser);
     } catch (error) {
         next(error);
     }

@@ -16,7 +16,7 @@ router.get("/sent-emails", authCheck, mailController.getSentEmails);
  * API TO ACCESS ALL EMAILS TO BE SENT IN FUTURE
  */
 router.get(
-    "/future-sent-emails",
+    "/scheduled-emails",
     authCheck,
     mailController.getEmailsToBeSentInFuture
 );
